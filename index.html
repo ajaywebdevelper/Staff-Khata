@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#1769aa">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -5687,6 +5687,22 @@ function initializeApp(){
 
 initializeApp();
 
+</script>
+    <script>
+  function fixBottom() {
+    var bar = document.querySelector('.bottom-bar, .bottom-btn, footer');
+    if(bar){
+      var safe = 30; // default 30px ऊपर उठा दो
+      // Android में navigation bar की height
+      if(window.innerHeight < screen.height) {
+         safe = 50; 
+      }
+      bar.style.bottom = safe + 'px';
+      bar.style.position = 'fixed';
+    }
+  }
+  window.addEventListener('load', fixBottom);
+  window.addEventListener('resize', fixBottom);
 </script>
 
 </body>
