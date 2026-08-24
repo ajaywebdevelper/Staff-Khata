@@ -1,0 +1,5693 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<meta name="theme-color" content="#1769aa">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+    <script src="https://accounts.google.com/gsi/client"></script>
+
+<title>कर्मचारी हिसाब एवं Attendance</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,"Noto Sans Devanagari",sans-serif;
+}
+
+body{
+    background:#eef5fb;
+    color:#17202a;
+    min-height:100vh;
+}
+
+button,
+input,
+select{
+    font:inherit;
+}
+
+button{
+    border:0;
+    cursor:pointer;
+}
+
+.header{
+    position:sticky;
+    top:0;
+    z-index:1000;
+    background:linear-gradient(135deg,#1261a0,#2196f3);
+    color:white;
+    padding:13px 14px;
+    box-shadow:0 3px 12px rgba(0,0,0,.18);
+}
+
+.header-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.logo{
+    width:46px;
+    height:46px;
+    border-radius:14px;
+    background:white;
+    color:#1769aa;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:23px;
+    flex-shrink:0;
+}
+
+.header-title{
+    flex:1;
+}
+
+.header-title h1{
+    font-size:18px;
+}
+
+.header-title p{
+    font-size:11px;
+    opacity:.9;
+    margin-top:3px;
+}
+
+.menu-btn{
+    width:44px;
+    height:44px;
+    border-radius:12px;
+    background:rgba(255,255,255,.18);
+    color:white;
+    font-size:24px;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+    padding:14px 14px 90px;
+}
+
+.page{
+    display:none;
+}
+
+.page.active{
+    display:block;
+}
+
+.section-title{
+    color:#123c60;
+    font-size:21px;
+    margin:7px 0 14px;
+}
+
+.card{
+    background:white;
+    border:1px solid #dceaf5;
+    border-radius:19px;
+    padding:15px;
+    margin-bottom:13px;
+    box-shadow:0 3px 14px rgba(0,0,0,.06);
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+.full{
+    grid-column:1/-1;
+}
+
+.field{
+    margin-bottom:3px;
+}
+
+.field label{
+    display:block;
+    font-size:13px;
+    font-weight:bold;
+    color:#46545f;
+    margin-bottom:6px;
+}
+
+.field input,
+.field select,
+.search input{
+    width:100%;
+    height:45px;
+    border:1px solid #cbdce8;
+    border-radius:11px;
+    padding:0 11px;
+    background:#f9fcff;
+    outline:none;
+}
+
+.field input:focus,
+.field select:focus,
+.search input:focus{
+    border-color:#2196f3;
+    background:white;
+}
+
+.btn{
+    min-height:43px;
+    border-radius:11px;
+    padding:8px 13px;
+    font-weight:bold;
+}
+
+.primary{
+    background:#1976d2;
+    color:white;
+}
+
+.success{
+    background:#16a085;
+    color:white;
+}
+
+.danger{
+    background:#e74c3c;
+    color:white;
+}
+
+.warning{
+    background:#f39c12;
+    color:white;
+}
+
+.light{
+    background:#edf4f9;
+    color:#234;
+}
+
+.actions{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-top:11px;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+}
+
+.stat{
+    background:white;
+    border:1px solid #dceaf5;
+    border-radius:17px;
+    padding:14px;
+}
+
+.stat small{
+    display:block;
+    color:#667;
+    margin-top:5px;
+}
+
+.stat strong{
+    display:block;
+    color:#1769aa;
+    font-size:22px;
+    margin-top:4px;
+}
+
+.employee-card{
+    display:flex;
+    align-items:center;
+    gap:11px;
+}
+
+.avatar{
+    width:51px;
+    height:51px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#1976d2,#64b5f6);
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-weight:bold;
+    font-size:19px;
+    flex-shrink:0;
+}
+
+.employee-info{
+    flex:1;
+}
+
+.employee-info h3{
+    font-size:17px;
+}
+
+.employee-info p{
+    font-size:12px;
+    color:#687781;
+    margin-top:4px;
+}
+
+.empty{
+    text-align:center;
+    padding:27px 12px;
+    color:#77848d;
+}
+
+.search{
+    margin-bottom:12px;
+}
+
+.att-row{
+    background:#f8fbfd;
+    border:1px solid #e0ebf2;
+    border-radius:15px;
+    padding:11px;
+    margin-bottom:8px;
+}
+
+.att-head{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    font-weight:bold;
+}
+
+.status-buttons{
+    display:flex;
+    gap:5px;
+    margin-top:10px;
+}
+
+.status-btn{
+    flex:1;
+    padding:9px 2px;
+    border-radius:9px;
+    background:#e8eef2;
+    color:#455;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.status-btn.selected.present{
+    background:#1abc9c;
+    color:white;
+}
+
+.status-btn.selected.absent{
+    background:#e74c3c;
+    color:white;
+}
+
+.status-btn.selected.half{
+    background:#f39c12;
+    color:white;
+}
+
+.status-btn.selected.leave{
+    background:#8e44ad;
+    color:white;
+}
+
+.summary-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:9px;
+}
+
+.summary-box{
+    background:#f4f9fc;
+    border-radius:13px;
+    padding:12px;
+}
+
+.summary-box small{
+    color:#687781;
+}
+
+.summary-box strong{
+    display:block;
+    font-size:18px;
+    margin-top:4px;
+}
+
+.table-wrap{
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    min-width:560px;
+    border-collapse:collapse;
+}
+
+th,
+td{
+    padding:9px;
+    border-bottom:1px solid #e4edf2;
+    text-align:left;
+    font-size:13px;
+}
+
+th{
+    background:#edf6fc;
+    color:#31546d;
+}
+
+.history-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:8px;
+    padding:10px 0;
+    border-bottom:1px solid #e8eef2;
+}
+
+.history-date{
+    font-weight:bold;
+}
+
+.badge{
+    display:inline-block;
+    border-radius:20px;
+    padding:5px 9px;
+    font-size:11px;
+    font-weight:bold;
+}
+
+.badge.present{
+    background:#d8f6ed;
+    color:#08785e;
+}
+
+.badge.absent{
+    background:#fde1de;
+    color:#c0392b;
+}
+
+.badge.half{
+    background:#fff0d8;
+    color:#a86300;
+}
+
+.badge.leave{
+    background:#eee0f5;
+    color:#73338c;
+}
+
+.badge.none{
+    background:#edf1f3;
+    color:#65727a;
+}
+
+.nav{
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    z-index:999;
+    max-width:1100px;
+    margin:auto;
+    background:white;
+    border-top:1px solid #d8e5ed;
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    box-shadow:0 -3px 15px rgba(0,0,0,.08);
+}
+
+.nav-btn{
+    min-height:62px;
+    background:white;
+    color:#61717d;
+    font-size:11px;
+}
+
+.nav-btn span{
+    display:block;
+    font-size:20px;
+    margin-bottom:3px;
+}
+
+.nav-btn.active{
+    color:#1976d2;
+    font-weight:bold;
+}
+
+.drawer{
+    position:fixed;
+    right:-310px;
+    top:0;
+    width:290px;
+    height:100vh;
+    background:white;
+    z-index:2000;
+    padding:18px;
+    box-shadow:-5px 0 20px rgba(0,0,0,.2);
+    transition:.25s;
+}
+
+.drawer.open{
+    right:0;
+}
+
+.drawer-close{
+    text-align:right;
+    font-size:26px;
+    margin-bottom:15px;
+}
+
+.drawer-item{
+    width:100%;
+    text-align:left;
+    background:#f1f6fa;
+    color:#234;
+    padding:13px;
+    border-radius:11px;
+    margin-bottom:8px;
+    font-weight:bold;
+}
+
+.overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.4);
+    z-index:1500;
+}
+
+.overlay.show{
+    display:block;
+}
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.5);
+    z-index:3000;
+    padding:15px;
+    overflow:auto;
+}
+
+.modal.show{
+    display:block;
+}
+
+.modal-box{
+    max-width:620px;
+    margin:25px auto;
+    background:white;
+    border-radius:21px;
+    padding:17px;
+}
+
+.modal-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+}
+
+.close{
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    background:#edf2f5;
+    font-size:20px;
+}
+
+.info{
+    background:#eaf5ff;
+    color:#22577a;
+    border-radius:12px;
+    padding:11px;
+    font-size:13px;
+    margin-bottom:11px;
+}
+
+.toast{
+    position:fixed;
+    left:50%;
+    bottom:76px;
+    transform:translate(-50%,20px);
+    background:#202b33;
+    color:white;
+    padding:10px 15px;
+    border-radius:11px;
+    opacity:0;
+    pointer-events:none;
+    transition:.25s;
+    z-index:5000;
+    max-width:90%;
+    text-align:center;
+    font-size:13px;
+}
+
+.toast.show{
+    opacity:1;
+    transform:translate(-50%,0);
+}
+
+@media(min-width:700px){
+    .stats{
+        grid-template-columns:repeat(5,1fr);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+
+    <div class="header-row">
+
+        <div class="logo">👥</div>
+
+        <div class="header-title">
+            <h1>कर्मचारी हिसाब</h1>
+            <p>Attendance • Salary • Payment</p>
+        </div>
+
+        <button class="menu-btn" onclick="openDrawer()">☰</button>
+
+    </div>
+
+</header>
+
+
+<div id="overlay"
+     class="overlay"
+     onclick="closeDrawer()">
+</div>
+
+
+<aside id="drawer" class="drawer">
+
+    <div class="drawer-close">
+        <button onclick="closeDrawer()">✕</button>
+    </div>
+
+    <button class="drawer-item"
+            onclick="showPage('dashboard')">
+        🏠 Dashboard
+    </button>
+
+    <button class="drawer-item"
+            onclick="showPage('employees')">
+        👥 कर्मचारी
+    </button>
+
+    <button class="drawer-item"
+            onclick="showPage('attendance')">
+        📅 Attendance
+    </button>
+
+    <button class="drawer-item"
+            onclick="showPage('accounts')">
+        💰 हिसाब-किताब
+    </button>
+
+    <button class="drawer-item"
+            onclick="showPage('reports')">
+        📊 Reports
+    </button>
+
+    <button class="drawer-item"
+            onclick="showPage('backup')">
+        ☁️ Backup / Restore
+    </button>
+
+</aside>
+
+
+<main class="container">
+
+
+<!-- ================= DASHBOARD ================= -->
+
+<section id="dashboard"
+         class="page active">
+
+    <h2 class="section-title">
+        Dashboard
+    </h2>
+
+    <div class="card">
+
+        <div class="field">
+
+            <label>
+                तारीख
+            </label>
+
+            <input
+                type="date"
+                id="dashboardDate"
+                onchange="renderDashboard()">
+
+        </div>
+
+    </div>
+
+
+    <div class="stats">
+
+        <div class="stat">
+            👥
+            <small>कुल कर्मचारी</small>
+            <strong id="statEmployees">0</strong>
+        </div>
+
+        <div class="stat">
+            ✅
+            <small>आज Present</small>
+            <strong id="statPresent">0</strong>
+        </div>
+
+        <div class="stat">
+            ❌
+            <small>आज Absent</small>
+            <strong id="statAbsent">0</strong>
+        </div>
+
+        <div class="stat">
+            💰
+            <small>महीने की मजदूरी</small>
+            <strong id="statSalary">₹0</strong>
+        </div>
+
+        <div class="stat">
+            📌
+            <small>कुल बाकी</small>
+            <strong id="statDue">₹0</strong>
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <h3>
+            आज की Attendance
+        </h3>
+
+        <div id="dashboardAttendance"
+             style="margin-top:10px;">
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ================= EMPLOYEES ================= -->
+
+<section id="employees"
+         class="page">
+
+    <h2 class="section-title">
+        कर्मचारी
+    </h2>
+
+
+    <div class="card">
+
+        <button
+            class="btn primary"
+            style="width:100%;"
+            onclick="openEmployeeModal()">
+
+            ＋ नया कर्मचारी जोड़ें
+
+        </button>
+
+    </div>
+
+
+    <div class="search">
+
+        <input
+            type="search"
+            id="employeeSearch"
+            placeholder="🔎 कर्मचारी का नाम खोजें"
+            oninput="renderEmployees()">
+
+    </div>
+
+
+    <div id="employeeList">
+    </div>
+
+</section>
+
+
+
+<!-- ================= ATTENDANCE ================= -->
+
+<section id="attendance"
+         class="page">
+
+    <h2 class="section-title">
+        Daily Attendance
+    </h2>
+
+
+    <div class="card">
+
+        <div class="field">
+
+            <label>
+                Attendance की तारीख
+            </label>
+
+            <input
+                type="date"
+                id="attendanceDate"
+                onchange="renderAttendance()">
+
+        </div>
+
+
+        <div class="actions">
+
+            <button
+                class="btn success"
+                onclick="markAllAttendance('present')">
+
+                सभी Present
+
+            </button>
+
+
+            <button
+                class="btn danger"
+                onclick="markAllAttendance('absent')">
+
+                सभी Absent
+
+            </button>
+
+
+            <button
+                class="btn warning"
+                onclick="markAllAttendance('half')">
+
+                सभी Half
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div id="attendanceList">
+    </div>
+
+
+    <button
+        class="btn primary"
+        style="width:100%;"
+        onclick="saveAttendance()">
+
+        💾 Attendance Save करें
+
+    </button>
+
+</section>
+
+
+
+<!-- ================= ACCOUNTS ================= -->
+
+<section id="accounts"
+         class="page">
+
+    <h2 class="section-title">
+        कर्मचारी का हिसाब
+    </h2>
+
+
+    <div class="card">
+
+        <div class="field">
+
+            <label>
+                कर्मचारी
+            </label>
+
+            <select
+                id="accountEmployee"
+                onchange="renderAccount()">
+
+            </select>
+
+        </div>
+
+
+        <div class="grid"
+             style="margin-top:10px;">
+
+            <div class="field">
+
+                <label>
+                    महीना
+                </label>
+
+                <input
+                    type="month"
+                    id="accountMonth"
+                    onchange="renderAccount()">
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Daily Wage ₹
+                </label>
+
+                <input
+                    type="number"
+                    id="accountWage"
+                    onchange="changeWage()">
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- यहाँ Employee Profile + Attendance History आएगी -->
+
+    <div id="employeeProfile">
+    </div>
+
+
+    <div id="accountSummary">
+    </div>
+
+
+    <div class="card">
+
+        <h3>
+            Advance / Payment
+        </h3>
+
+
+        <div class="grid"
+             style="margin-top:12px;">
+
+            <div class="field">
+
+                <label>
+                    प्रकार
+                </label>
+
+                <select id="transactionType">
+
+                    <option value="advance">
+                        Advance
+                    </option>
+
+                    <option value="payment">
+                        Payment
+                    </option>
+
+                    <option value="bonus">
+                        Bonus
+                    </option>
+
+                    <option value="deduction">
+                        Deduction
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    रकम ₹
+                </label>
+
+                <input
+                    type="number"
+                    id="transactionAmount">
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    तारीख
+                </label>
+
+                <input
+                    type="date"
+                    id="transactionDate">
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    नोट
+                </label>
+
+                <input
+                    type="text"
+                    id="transactionNote"
+                    placeholder="जैसे सप्ताह का Advance">
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="btn primary"
+            style="width:100%;margin-top:10px;"
+            onclick="addTransaction()">
+
+            ＋ हिसाब में जोड़ें
+
+        </button>
+
+    </div>
+
+
+    <div class="card">
+
+        <h3>
+            Transaction History
+        </h3>
+
+        <div id="transactionHistory">
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ================= REPORTS ================= -->
+
+<section id="reports"
+         class="page">
+
+    <h2 class="section-title">
+        Monthly Report
+    </h2>
+
+
+    <div class="card">
+
+        <div class="field">
+
+            <label>
+                कर्मचारी
+            </label>
+
+            <select
+                id="reportEmployee"
+                onchange="renderReport()">
+            </select>
+
+        </div>
+
+
+        <div class="field"
+             style="margin-top:10px;">
+
+            <label>
+                महीना
+            </label>
+
+            <input
+                type="month"
+                id="reportMonth"
+                onchange="renderReport()">
+
+        </div>
+
+    </div>
+
+
+    <div id="reportResult">
+    </div>
+
+</section>
+
+
+
+<!-- ================= BACKUP ================= -->
+
+<section id="backup"
+         class="page">
+
+    <h2 class="section-title">
+        Backup & Restore
+    </h2>
+
+
+    <div class="card">
+
+        <div class="info">
+
+            <b>महत्वपूर्ण:</b><br>
+
+            फोन में रहने वाला Local Data फोन खोने पर अपने-आप वापस नहीं आता।
+            इसलिए नीचे से नियमित Backup लें।
+
+        </div>
+
+
+        <button
+            class="btn primary"
+            style="width:100%;margin-bottom:9px;"
+            onclick="downloadBackup()">
+
+            📥 Local Backup Download
+
+        </button>
+
+
+        <button
+            class="btn success"
+            style="width:100%;"
+            onclick="document.getElementById('restoreInput').click()">
+
+            📤 Local Backup Restore
+
+        </button>
+
+
+        <input
+            type="file"
+            id="restoreInput"
+            accept=".json"
+            style="display:none;"
+            onchange="restoreLocalBackup(event)">
+
+    </div>
+
+
+    <div class="card">
+
+        <h3>
+            ☁️ Google Drive
+        </h3>
+
+        <div class="info">
+
+            Google Drive Backup के लिए Google Cloud Console में
+            OAuth Web Client ID बनाकर नीचे डालना होगा।
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Google OAuth Client ID
+            </label>
+
+            <input
+                type="text"
+                id="googleClientId"
+                placeholder="xxxxx.apps.googleusercontent.com"
+                onchange="saveGoogleClientId()">
+
+        </div>
+
+
+        <div class="actions">
+
+            <button
+                class="btn primary"
+                onclick="googleLogin()">
+
+                🔐 Google Login
+
+            </button>
+
+
+            <button
+                class="btn light"
+                onclick="googleLogout()">
+
+                Logout
+
+            </button>
+
+        </div>
+
+
+        <p
+            id="googleStatus"
+            style="font-size:13px;color:#687781;margin-top:10px;">
+
+            Google Drive: Not Connected
+
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+        <h3>
+            Google Drive Backup
+        </h3>
+
+
+        <p style="font-size:13px;color:#687781;margin:8px 0 12px;">
+
+            Backup आपके Google Drive में
+            <b>EmployeeManagementBackup.json</b>
+            नाम से सेव होगा।
+
+        </p>
+
+
+        <div class="actions">
+
+            <button
+                class="btn success"
+                onclick="backupToGoogleDrive()">
+
+                ☁️ Backup to Drive
+
+            </button>
+
+
+            <button
+                class="btn primary"
+                onclick="restoreFromGoogleDrive()">
+
+                🔄 Restore from Drive
+
+            </button>
+
+        </div>
+
+
+        <p
+            id="lastBackup"
+            style="font-size:12px;color:#687781;margin-top:10px;">
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+        <h3>
+            ⚠️ सभी डेटा Delete
+        </h3>
+
+        <p style="font-size:13px;margin:8px 0 12px;">
+
+            सभी कर्मचारी, Attendance और हिसाब मिट जाएगा।
+            Delete करने से पहले Backup जरूर लें।
+
+        </p>
+
+
+        <button
+            class="btn danger"
+            style="width:100%;"
+            onclick="deleteAllData()">
+
+            सभी डेटा Delete करें
+
+        </button>
+
+    </div>
+
+</section>
+
+</main>
+
+
+
+<!-- ================= BOTTOM NAV ================= -->
+
+<nav class="nav">
+
+    <button
+        class="nav-btn active"
+        data-page="dashboard"
+        onclick="showPage('dashboard')">
+
+        <span>🏠</span>
+        Home
+
+    </button>
+
+
+    <button
+        class="nav-btn"
+        data-page="employees"
+        onclick="showPage('employees')">
+
+        <span>👥</span>
+        कर्मचारी
+
+    </button>
+
+
+    <button
+        class="nav-btn"
+        data-page="attendance"
+        onclick="showPage('attendance')">
+
+        <span>📅</span>
+        Attendance
+
+    </button>
+
+
+    <button
+        class="nav-btn"
+        data-page="accounts"
+        onclick="showPage('accounts')">
+
+        <span>💰</span>
+        हिसाब
+
+    </button>
+
+
+    <button
+        class="nav-btn"
+        data-page="reports"
+        onclick="showPage('reports')">
+
+        <span>📊</span>
+        Report
+
+    </button>
+
+</nav>
+
+
+
+<!-- ================= EMPLOYEE MODAL ================= -->
+
+<div
+    class="modal"
+    id="employeeModal">
+
+    <div class="modal-box">
+
+        <div class="modal-head">
+
+            <h2 id="employeeModalTitle">
+                नया कर्मचारी
+            </h2>
+
+            <button
+                class="close"
+                onclick="closeEmployeeModal()">
+
+                ✕
+
+            </button>
+
+        </div>
+
+
+        <input
+            type="hidden"
+            id="editEmployeeId">
+
+
+        <div class="grid">
+
+            <div class="field full">
+
+                <label>
+                    कर्मचारी का नाम *
+                </label>
+
+                <input
+                    type="text"
+                    id="employeeName">
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    मोबाइल
+                </label>
+
+                <input
+                    type="tel"
+                    id="employeeMobile">
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    पद / काम
+                </label>
+
+                <input
+                    type="text"
+                    id="employeeRole">
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Daily Wage ₹
+                </label>
+
+                <input
+                    type="number"
+                    id="employeeWage">
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Joining Date
+                </label>
+
+                <input
+                    type="date"
+                    id="employeeJoinDate">
+
+            </div>
+
+        </div>
+
+
+        <div class="actions">
+
+            <button
+                class="btn primary"
+                style="flex:1;"
+                onclick="saveEmployee()">
+
+                💾 Save
+
+            </button>
+
+
+            <button
+                class="btn light"
+                style="flex:1;"
+                onclick="closeEmployeeModal()">
+
+                Cancel
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<div
+    id="toast"
+    class="toast">
+</div>
+
+
+
+<script>
+
+/* =========================================================
+   DATABASE
+========================================================= */
+
+const STORAGE_KEY =
+    "employee_app_database_v3";
+
+
+
+const DRIVE_FILE_NAME =
+    "EmployeeManagementBackup.json";
+
+let db = {
+    employees: [],
+    attendance: {},
+    transactions: []
+};
+
+
+/* =========================================================
+   BASIC HELPERS
+========================================================= */
+
+function today(){
+
+    const d = new Date();
+
+    return (
+        d.getFullYear() +
+        "-" +
+        String(d.getMonth()+1).padStart(2,"0") +
+        "-" +
+        String(d.getDate()).padStart(2,"0")
+    );
+}
+
+
+function currentMonth(){
+
+    return today().slice(0,7);
+
+}
+
+
+function money(value){
+
+    return "₹" +
+        Number(value || 0)
+        .toLocaleString("en-IN",{
+            maximumFractionDigits:2
+        });
+
+}
+
+
+function formatDate(date){
+
+    if(!date) return "";
+
+    const p = date.split("-");
+
+    if(p.length !== 3) return date;
+
+    return p[2] + "-" + p[1] + "-" + p[0];
+
+}
+
+
+function escapeHTML(value){
+
+    return String(value ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+function showToast(message){
+
+    const t =
+        document.getElementById("toast");
+
+    t.textContent = message;
+
+    t.classList.add("show");
+
+    clearTimeout(window.toastTimer);
+
+    window.toastTimer =
+        setTimeout(
+            () => t.classList.remove("show"),
+            2200
+        );
+
+}
+
+
+/* =========================================================
+   DATABASE LOAD / SAVE
+========================================================= */
+
+function loadDatabase(){
+
+    try{
+
+        const saved =
+            localStorage.getItem(STORAGE_KEY);
+
+        if(saved){
+
+            const parsed =
+                JSON.parse(saved);
+
+            db = {
+
+                employees:
+                    Array.isArray(parsed.employees)
+                    ? parsed.employees
+                    : [],
+
+                attendance:
+                    parsed.attendance &&
+                    typeof parsed.attendance === "object"
+                    ? parsed.attendance
+                    : {},
+
+                transactions:
+                    Array.isArray(parsed.transactions)
+                    ? parsed.transactions
+                    : []
+
+            };
+
+        }
+
+    }catch(error){
+
+        console.error(error);
+
+        db = {
+            employees:[],
+            attendance:{},
+            transactions:[]
+        };
+
+    }
+
+}
+
+
+function saveDatabase(){
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(db)
+    );
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function showPage(pageId){
+
+    document
+        .querySelectorAll(".page")
+        .forEach(page=>{
+            page.classList.remove("active");
+        });
+
+
+    const page =
+        document.getElementById(pageId);
+
+    if(page){
+        page.classList.add("active");
+    }
+
+
+    document
+        .querySelectorAll(".nav-btn")
+        .forEach(btn=>{
+
+            btn.classList.toggle(
+                "active",
+                btn.dataset.page === pageId
+            );
+
+        });
+
+
+    closeDrawer();
+
+
+    if(pageId === "dashboard")
+        renderDashboard();
+
+    if(pageId === "employees")
+        renderEmployees();
+
+    if(pageId === "attendance")
+        renderAttendance();
+
+    if(pageId === "accounts")
+        prepareAccounts();
+
+    if(pageId === "reports")
+        prepareReports();
+
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+}
+
+
+/* =========================================================
+   DRAWER
+========================================================= */
+
+function openDrawer(){
+
+    document
+        .getElementById("drawer")
+        .classList.add("open");
+
+    document
+        .getElementById("overlay")
+        .classList.add("show");
+
+}
+
+
+function closeDrawer(){
+
+    document
+        .getElementById("drawer")
+        .classList.remove("open");
+
+    document
+        .getElementById("overlay")
+        .classList.remove("show");
+
+}
+
+
+/* =========================================================
+   EMPLOYEE
+========================================================= */
+
+function openEmployeeModal(id = ""){
+
+    const modal =
+        document.getElementById("employeeModal");
+
+    modal.classList.add("show");
+
+
+    const employee =
+        db.employees.find(
+            e => e.id === id
+        );
+
+
+    document.getElementById(
+        "editEmployeeId"
+    ).value = id;
+
+
+    document.getElementById(
+        "employeeModalTitle"
+    ).textContent =
+        employee
+        ? "कर्मचारी Edit करें"
+        : "नया कर्मचारी";
+
+
+    document.getElementById(
+        "employeeName"
+    ).value =
+        employee?.name || "";
+
+
+    document.getElementById(
+        "employeeMobile"
+    ).value =
+        employee?.mobile || "";
+
+
+    document.getElementById(
+        "employeeRole"
+    ).value =
+        employee?.role || "";
+
+
+    document.getElementById(
+        "employeeWage"
+    ).value =
+        employee?.wage || "";
+
+
+    document.getElementById(
+        "employeeJoinDate"
+    ).value =
+        employee?.joinDate || today();
+
+}
+
+
+function closeEmployeeModal(){
+
+    document
+        .getElementById("employeeModal")
+        .classList.remove("show");
+
+}
+
+
+function saveEmployee(){
+
+    const name =
+        document
+        .getElementById("employeeName")
+        .value
+        .trim();
+
+
+    if(!name){
+
+        showToast(
+            "कर्मचारी का नाम डालें"
+        );
+
+        return;
+    }
+
+
+    const id =
+        document
+        .getElementById("editEmployeeId")
+        .value;
+
+
+    const data = {
+
+        name,
+
+        mobile:
+            document
+            .getElementById("employeeMobile")
+            .value
+            .trim(),
+
+        role:
+            document
+            .getElementById("employeeRole")
+            .value
+            .trim(),
+
+        wage:
+            Number(
+                document
+                .getElementById("employeeWage")
+                .value || 0
+            ),
+
+        joinDate:
+            document
+            .getElementById("employeeJoinDate")
+            .value || today()
+
+    };
+
+
+    if(id){
+
+        const employee =
+            db.employees.find(
+                e => e.id === id
+            );
+
+
+        if(employee){
+
+            /*
+             IMPORTANT:
+             केवल employee fields update होंगे।
+             ID कभी नहीं बदलेगी।
+             इसलिए पुरानी Attendance सुरक्षित रहेगी।
+            */
+
+            employee.name =
+                data.name;
+
+            employee.mobile =
+                data.mobile;
+
+            employee.role =
+                data.role;
+
+            employee.wage =
+                data.wage;
+
+            employee.joinDate =
+                data.joinDate;
+
+        }
+
+
+        showToast(
+            "कर्मचारी Update हो गया"
+        );
+
+    }else{
+
+
+        const employee = {
+
+            id:
+                createId(),
+
+            name:
+                data.name,
+
+            mobile:
+                data.mobile,
+
+            role:
+                data.role,
+
+            wage:
+                data.wage,
+
+            joinDate:
+                data.joinDate,
+
+            active:true
+
+        };
+
+
+        db.employees.push(
+            employee
+        );
+
+
+        showToast(
+            "कर्मचारी जोड़ दिया गया"
+        );
+
+    }
+
+
+    saveDatabase();
+
+    closeEmployeeModal();
+
+    renderEmployees();
+
+    renderDashboard();
+
+    refreshEmployeeSelects();
+
+}
+
+
+function createId(){
+
+    if(
+        window.crypto &&
+        crypto.randomUUID
+    ){
+
+        return crypto.randomUUID();
+
+    }
+
+    return (
+        Date.now().toString(36) +
+        Math.random()
+        .toString(36)
+        .slice(2)
+    );
+
+}
+
+
+/* =========================================================
+   EMPLOYEE LIST
+========================================================= */
+
+function renderEmployees(){
+
+    const box =
+        document.getElementById(
+            "employeeList"
+        );
+
+
+    const search =
+        (
+            document
+            .getElementById("employeeSearch")
+            .value || ""
+        )
+        .toLowerCase()
+        .trim();
+
+
+    const list =
+        db.employees.filter(
+            employee =>
+                employee.name
+                .toLowerCase()
+                .includes(search)
+        );
+
+
+    if(!list.length){
+
+        box.innerHTML = `
+            <div class="card empty">
+                अभी कोई कर्मचारी नहीं है।
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    box.innerHTML =
+        list.map(employee=>{
+
+            const initial =
+                employee.name
+                .trim()
+                .charAt(0);
+
+
+            return `
+
+            <div class="card">
+
+                <div class="employee-card">
+
+                    <div class="avatar">
+                        ${escapeHTML(initial)}
+                    </div>
+
+                    <div class="employee-info">
+
+                        <h3>
+                            ${escapeHTML(employee.name)}
+                        </h3>
+
+                        <p>
+                            ${escapeHTML(
+                                employee.role ||
+                                "कर्मचारी"
+                            )}
+                            •
+                            ${money(employee.wage)}
+                            /दिन
+                        </p>
+
+                        <p>
+                            ${
+                                employee.mobile
+                                ? escapeHTML(
+                                    employee.mobile
+                                  )
+                                : "मोबाइल नहीं दिया"
+                            }
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="actions">
+
+                    <button
+                        class="btn light"
+                        onclick="
+                            openEmployeeModal(
+                                '${employee.id}'
+                            )
+                        ">
+
+                        ✏️ Edit
+
+                    </button>
+
+
+                    <button
+                        class="btn primary"
+                        onclick="
+                            openEmployeeProfile(
+                                '${employee.id}'
+                            )
+                        ">
+
+                        👤 Profile
+
+                    </button>
+
+
+                    <button
+                        class="btn danger"
+                        onclick="
+                            deleteEmployee(
+                                '${employee.id}'
+                            )
+                        ">
+
+                        🗑 Delete
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            `;
+
+        }).join("");
+
+}
+
+
+/* =========================================================
+   EMPLOYEE PROFILE
+========================================================= */
+
+function openEmployeeProfile(id){
+
+    refreshEmployeeSelects();
+
+    document.getElementById(
+        "accountEmployee"
+    ).value = id;
+
+
+    document.getElementById(
+        "accountMonth"
+    ).value = currentMonth();
+
+
+    showPage("accounts");
+
+}
+
+
+/* =========================================================
+   DELETE EMPLOYEE
+========================================================= */
+
+function deleteEmployee(id){
+
+    const employee =
+        db.employees.find(
+            e => e.id === id
+        );
+
+
+    if(!employee) return;
+
+
+    if(
+        !confirm(
+            employee.name +
+            " का पूरा रिकॉर्ड Delete करना है?"
+        )
+    ){
+
+        return;
+
+    }
+
+
+    db.employees =
+        db.employees.filter(
+            e => e.id !== id
+        );
+
+
+    /*
+     Employee हटाने पर उसकी Attendance
+     और Transactions भी हटाए जा रहे हैं।
+    */
+
+    Object.keys(
+        db.attendance
+    ).forEach(key=>{
+
+        if(
+    key.endsWith("|" + id)
+){
+    delete db.attendance[key];
+}
+        {
+
+            delete db.attendance[key];
+
+        }
+
+    });
+
+
+    db.transactions =
+        db.transactions.filter(
+            t => t.employeeId !== id
+        );
+
+
+    saveDatabase();
+
+    renderEmployees();
+
+    renderDashboard();
+
+    refreshEmployeeSelects();
+
+    showToast(
+        "कर्मचारी और उसका रिकॉर्ड Delete हो गया"
+    );
+
+}
+
+
+/* =========================================================
+   ATTENDANCE
+========================================================= */
+
+function attendanceKey(
+    date,
+    employeeId
+){
+
+    /*
+       यह Attendance की सबसे महत्वपूर्ण
+       identification logic है।
+
+       Date + Employee ID
+
+       उदाहरण:
+       2026-08-24_EMPLOYEE_ID
+
+       इसलिए नाम बदलने पर भी record सुरक्षित रहेगा।
+    */
+
+    return date + "|" + employeeId;
+
+}
+
+
+/* =========================================================
+   RENDER ATTENDANCE
+========================================================= */
+
+function renderAttendance(){
+
+    const date =
+        document
+        .getElementById("attendanceDate")
+        .value || today();
+
+
+    document.getElementById(
+        "attendanceDate"
+    ).value = date;
+
+
+    const box =
+        document.getElementById(
+            "attendanceList"
+        );
+
+
+    if(!db.employees.length){
+
+        box.innerHTML = `
+            <div class="card empty">
+                पहले कर्मचारी जोड़ें।
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    box.innerHTML =
+        db.employees.map(employee=>{
+
+            const key =
+                attendanceKey(
+                    date,
+                    employee.id
+                );
+
+
+            const status =
+                db.attendance[key] || "";
+
+
+            return `
+
+            <div
+                class="att-row"
+                data-employee-id="${employee.id}">
+
+                <div class="att-head">
+
+                    <div
+                        class="avatar"
+                        style="
+                            width:42px;
+                            height:42px;
+                            font-size:16px;
+                        ">
+
+                        ${escapeHTML(
+                            employee.name.charAt(0)
+                        )}
+
+                    </div>
+
+
+                    <span>
+                        ${escapeHTML(
+                            employee.name
+                        )}
+                    </span>
+
+                </div>
+
+
+                <div class="status-buttons">
+
+                    ${attendanceButton(
+                        "present",
+                        "✓ Present",
+                        status
+                    )}
+
+                    ${attendanceButton(
+                        "absent",
+                        "✕ Absent",
+                        status
+                    )}
+
+                    ${attendanceButton(
+                        "half",
+                        "½ Half",
+                        status
+                    )}
+
+                    ${attendanceButton(
+                        "leave",
+                        "🏖 Leave",
+                        status
+                    )}
+
+                </div>
+
+            </div>
+
+            `;
+
+        }).join("");
+
+}
+
+
+function attendanceButton(
+    status,
+    label,
+    selected
+){
+
+    return `
+
+        <button
+            class="
+                status-btn
+                ${status}
+                ${
+                    selected === status
+                    ? "selected"
+                    : ""
+                }
+            "
+            data-status="${status}"
+            onclick="selectAttendance(this)">
+
+            ${label}
+
+        </button>
+
+    `;
+
+}
+
+
+function selectAttendance(button){
+
+    const row =
+        button.closest(".att-row");
+
+
+    row
+        .querySelectorAll(".status-btn")
+        .forEach(btn=>{
+            btn.classList.remove(
+                "selected"
+            );
+        });
+
+
+    button.classList.add(
+        "selected"
+    );
+
+}
+
+
+/* =========================================================
+   MARK ALL
+========================================================= */
+
+function markAllAttendance(status){
+
+    document
+        .querySelectorAll(".att-row")
+        .forEach(row=>{
+
+            row
+                .querySelectorAll(".status-btn")
+                .forEach(btn=>{
+                    btn.classList.remove(
+                        "selected"
+                    );
+                });
+
+
+            const target =
+                row.querySelector(
+                    `.status-btn[data-status="${status}"]`
+                );
+
+
+            if(target){
+
+                target.classList.add(
+                    "selected"
+                );
+
+            }
+
+        });
+
+}
+
+
+/* =========================================================
+   SAVE ATTENDANCE
+========================================================= */
+
+function saveAttendance(){
+
+    const date =
+        document
+        .getElementById("attendanceDate")
+        .value;
+
+
+    if(!date){
+
+        showToast(
+            "तारीख चुनें"
+        );
+
+        return;
+
+    }
+
+
+    document
+        .querySelectorAll(".att-row")
+        .forEach(row=>{
+
+            /*
+             यहाँ नाम से कर्मचारी खोजने की
+             गलती नहीं है।
+
+             सीधे Employee ID लिया जा रहा है।
+            */
+
+            const employeeId =
+                row.dataset.employeeId;
+
+
+            const selected =
+                row.querySelector(
+                    ".status-btn.selected"
+                );
+
+
+            if(!selected) return;
+
+
+            const status =
+                selected.dataset.status;
+
+
+            const key =
+                attendanceKey(
+                    date,
+                    employeeId
+                );
+
+
+            db.attendance[key] =
+                status;
+
+        });
+
+
+    saveDatabase();
+
+    showToast(
+        "Attendance Save हो गई"
+    );
+
+
+    renderDashboard();
+
+}
+
+
+/* =========================================================
+   ACCOUNT CALCULATION
+========================================================= */
+
+function calculateAccount(
+    employeeId,
+    selectedMonth
+){
+
+    const employee =
+        db.employees.find(
+            e => e.id === employeeId
+        );
+
+
+    if(!employee){
+
+        return null;
+
+    }
+
+
+    let present = 0;
+    let absent = 0;
+    let half = 0;
+    let leave = 0;
+
+
+    /*
+      Attendance की सभी entries में
+      Employee ID के आधार पर search।
+    */
+
+    Object.entries(
+        db.attendance
+    ).forEach(([key,status])=>{
+
+        const separator =
+            key.indexOf("|");
+
+
+        if(separator === -1){
+            return;
+        }
+
+
+        const date =
+            key.substring(
+                0,
+                separator
+            );
+
+
+        const id =
+            key.substring(
+                separator + 1
+            );
+
+
+        if(
+            id !== employeeId ||
+            !date.startsWith(
+                selectedMonth
+            )
+        ){
+
+            return;
+
+        }
+
+
+        if(status === "present")
+            present++;
+
+
+        if(status === "absent")
+            absent++;
+
+
+        if(status === "half")
+            half++;
+
+
+        if(status === "leave")
+            leave++;
+
+    });
+
+
+    const wage =
+        Number(
+            employee.wage || 0
+        );
+
+
+    const earnedSalary =
+        (
+            present * wage
+        ) +
+        (
+            half * wage * 0.5
+        );
+
+
+    let advance = 0;
+    let payment = 0;
+    let bonus = 0;
+    let deduction = 0;
+
+
+    db.transactions.forEach(
+        transaction=>{
+
+            if(
+                transaction.employeeId !==
+                employeeId
+            ){
+
+                return;
+
+            }
+
+
+            if(
+                !transaction.date.startsWith(
+                    selectedMonth
+                )
+            ){
+
+                return;
+
+            }
+
+
+            const amount =
+                Number(
+                    transaction.amount || 0
+                );
+
+
+            if(
+                transaction.type ===
+                "advance"
+            )
+                advance += amount;
+
+
+            if(
+                transaction.type ===
+                "payment"
+            )
+                payment += amount;
+
+
+            if(
+                transaction.type ===
+                "bonus"
+            )
+                bonus += amount;
+
+
+            if(
+                transaction.type ===
+                "deduction"
+            )
+                deduction += amount;
+
+        }
+    );
+
+
+    const netSalary =
+        earnedSalary +
+        bonus -
+        deduction;
+
+
+    const due =
+        netSalary -
+        advance -
+        payment;
+
+
+    return {
+
+        employee,
+
+        present,
+        absent,
+        half,
+        leave,
+
+        wage,
+
+        earnedSalary,
+
+        advance,
+        payment,
+        bonus,
+        deduction,
+
+        netSalary,
+
+        due
+
+    };
+
+}
+
+
+/* =========================================================
+   ACCOUNT PAGE
+========================================================= */
+
+function prepareAccounts(){
+
+    refreshEmployeeSelects();
+
+
+    const monthInput =
+        document.getElementById(
+            "accountMonth"
+        );
+
+
+    if(!monthInput.value){
+
+        monthInput.value =
+            currentMonth();
+
+    }
+
+
+    const transactionDate =
+        document.getElementById(
+            "transactionDate"
+        );
+
+
+    if(!transactionDate.value){
+
+        transactionDate.value =
+            today();
+
+    }
+
+
+    renderAccount();
+
+}
+
+
+/* =========================================================
+   SELECT OPTIONS
+========================================================= */
+
+function refreshEmployeeSelects(){
+
+    const accountSelect =
+        document.getElementById(
+            "accountEmployee"
+        );
+
+
+    const reportSelect =
+        document.getElementById(
+            "reportEmployee"
+        );
+
+
+    const accountCurrent =
+        accountSelect.value;
+
+
+    const reportCurrent =
+        reportSelect.value;
+
+
+    const options = `
+
+        <option value="">
+            कर्मचारी चुनें
+        </option>
+
+        ${
+            db.employees.map(
+                employee=>`
+
+                <option
+                    value="${employee.id}">
+
+                    ${escapeHTML(
+                        employee.name
+                    )}
+
+                </option>
+
+                `
+            ).join("")
+        }
+
+    `;
+
+
+    accountSelect.innerHTML =
+        options;
+
+
+    reportSelect.innerHTML =
+        options;
+
+
+    if(
+        db.employees.some(
+            e => e.id === accountCurrent
+        )
+    ){
+
+        accountSelect.value =
+            accountCurrent;
+
+    }
+
+
+    if(
+        db.employees.some(
+            e => e.id === reportCurrent
+        )
+    ){
+
+        reportSelect.value =
+            reportCurrent;
+
+    }
+
+}
+
+
+/* =========================================================
+   RENDER ACCOUNT
+========================================================= */
+
+function renderAccount(){
+
+    const employeeId =
+        document
+        .getElementById(
+            "accountEmployee"
+        )
+        .value;
+
+
+    const selectedMonth =
+        document
+        .getElementById(
+            "accountMonth"
+        )
+        .value;
+
+
+    const profileBox =
+        document.getElementById(
+            "employeeProfile"
+        );
+
+
+    const summaryBox =
+        document.getElementById(
+            "accountSummary"
+        );
+
+
+    if(!employeeId){
+
+        profileBox.innerHTML = "";
+
+        summaryBox.innerHTML = `
+            <div class="card empty">
+                कर्मचारी चुनें।
+            </div>
+        `;
+
+        document.getElementById(
+            "transactionHistory"
+        ).innerHTML = "";
+
+        return;
+
+    }
+
+
+    const data =
+        calculateAccount(
+            employeeId,
+            selectedMonth
+        );
+
+
+    if(!data) return;
+
+
+    document.getElementById(
+        "accountWage"
+    ).value =
+        data.wage;
+
+
+    /*
+       Employee Profile
+    */
+
+    profileBox.innerHTML = `
+
+        <div class="card">
+
+            <div class="employee-card">
+
+                <div class="avatar">
+
+                    ${escapeHTML(
+                        data.employee.name.charAt(0)
+                    )}
+
+                </div>
+
+
+                <div class="employee-info">
+
+                    <h3>
+                        ${escapeHTML(
+                            data.employee.name
+                        )}
+                    </h3>
+
+                    <p>
+                        ${escapeHTML(
+                            data.employee.role ||
+                            "कर्मचारी"
+                        )}
+                    </p>
+
+                    <p>
+                        Joining:
+                        ${formatDate(
+                            data.employee.joinDate
+                        )}
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    /*
+       Summary
+    */
+
+    summaryBox.innerHTML = `
+
+        <div class="card">
+
+            <h3>
+                ${selectedMonth}
+                का हिसाब
+            </h3>
+
+
+            <div
+                class="summary-grid"
+                style="margin-top:12px;">
+
+                <div class="summary-box">
+                    <small>Present</small>
+                    <strong>
+                        ${data.present}
+                    </strong>
+                </div>
+
+
+                <div class="summary-box">
+                    <small>Absent</small>
+                    <strong>
+                        ${data.absent}
+                    </strong>
+                </div>
+
+
+                <div class="summary-box">
+                    <small>Half Day</small>
+                    <strong>
+                        ${data.half}
+                    </strong>
+                </div>
+
+
+                <div class="summary-box">
+                    <small>Leave</small>
+                    <strong>
+                        ${data.leave}
+                    </strong>
+                </div>
+
+
+                <div class="summary-box">
+                    <small>Earned Salary</small>
+                    <strong>
+                        ${money(
+                            data.earnedSalary
+                        )}
+                    </strong>
+                </div>
+
+
+                <div class="summary-box">
+                    <small>Bonus</small>
+                    <strong>
+                        ${money(
+                            data.bonus
+                        )}
+                    </strong>
+                </div>
+
+
+                <div class="summary-box">
+                    <small>Advance</small>
+                    <strong>
+                        ${money(
+                            data.advance
+                        )}
+                    </strong>
+                </div>
+
+
+                <div class="summary-box">
+                    <small>Payment</small>
+                    <strong>
+                        ${money(
+                            data.payment
+                        )}
+                    </strong>
+                </div>
+
+            </div>
+
+
+            <div
+                style="
+                    margin-top:12px;
+                    padding:15px;
+                    border-radius:14px;
+                    background:#eaf6ff;
+                ">
+
+                <small>
+                    अंतिम बाकी
+                </small>
+
+                <strong
+                    style="
+                        display:block;
+                        margin-top:4px;
+                        font-size:27px;
+                        color:${
+                            data.due >= 0
+                            ? "#1769aa"
+                            : "#e74c3c"
+                        };
+                    ">
+
+                    ${money(
+                        data.due
+                    )}
+
+                </strong>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    /*
+       सबसे महत्वपूर्ण भाग:
+       Employee Profile की Monthly
+       Attendance History
+    */
+
+    renderAttendanceHistory(
+        employeeId,
+        selectedMonth
+    );
+
+
+    renderTransactionHistory(
+        employeeId,
+        selectedMonth
+    );
+
+}
+
+
+/* =========================================================
+   MONTHLY ATTENDANCE HISTORY
+========================================================= */
+
+function renderAttendanceHistory(
+    employeeId,
+    selectedMonth
+){
+
+    const profileBox =
+        document.getElementById(
+            "employeeProfile"
+        );
+
+
+    const [year,monthNumber] =
+        selectedMonth
+        .split("-")
+        .map(Number);
+
+
+    /*
+       उस महीने में कितने दिन हैं
+    */
+
+    const daysInMonth =
+        new Date(
+            year,
+            monthNumber,
+            0
+        ).getDate();
+
+
+    const statusInfo = {
+
+        present:{
+            label:"Present",
+            className:"present"
+        },
+
+        absent:{
+            label:"Absent",
+            className:"absent"
+        },
+
+        half:{
+            label:"Half Day",
+            className:"half"
+        },
+
+        leave:{
+            label:"Leave",
+            className:"leave"
+        }
+
+    };
+
+
+    let rows = "";
+
+
+    for(
+        let day = 1;
+        day <= daysInMonth;
+        day++
+    ){
+
+        const date =
+            selectedMonth +
+            "-" +
+            String(day).padStart(2,"0");
+
+
+        const status =
+            db.attendance[
+                attendanceKey(
+                    date,
+                    employeeId
+                )
+            ] || "";
+
+
+        const info =
+            statusInfo[status];
+
+
+        let badge;
+
+
+        if(info){
+
+            badge = `
+
+                <span
+                    class="badge ${info.className}">
+
+                    ${info.label}
+
+                </span>
+
+            `;
+
+        }else{
+
+            badge = `
+
+                <span
+                    class="badge none">
+
+                    Not Marked
+
+                </span>
+
+            `;
+
+        }
+
+
+        rows += `
+
+            <div class="history-row">
+
+                <span class="history-date">
+
+                    ${formatDate(date)}
+
+                </span>
+
+                ${badge}
+
+            </div>
+
+        `;
+
+    }
+
+
+    profileBox.innerHTML += `
+
+        <div class="card">
+
+            <h3>
+                📅 ${selectedMonth}
+                की पूरी Attendance
+            </h3>
+
+
+            <div
+                style="
+                    margin-top:10px;
+                ">
+
+                ${rows}
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   WAGE CHANGE
+========================================================= */
+
+function changeWage(){
+
+    const employeeId =
+        document
+        .getElementById(
+            "accountEmployee"
+        )
+        .value;
+
+
+    const employee =
+        db.employees.find(
+            e => e.id === employeeId
+        );
+
+
+    if(!employee) return;
+
+
+    employee.wage =
+        Number(
+            document
+            .getElementById(
+                "accountWage"
+            )
+            .value || 0
+        );
+
+
+    saveDatabase();
+
+    renderAccount();
+
+    renderDashboard();
+
+    showToast(
+        "Daily Wage Update हो गया"
+    );
+
+}
+
+
+/* =========================================================
+   TRANSACTION
+========================================================= */
+
+function addTransaction(){
+
+    const employeeId =
+        document
+        .getElementById(
+            "accountEmployee"
+        )
+        .value;
+
+
+    const type =
+        document
+        .getElementById(
+            "transactionType"
+        )
+        .value;
+
+
+    const amount =
+        Number(
+            document
+            .getElementById(
+                "transactionAmount"
+            )
+            .value || 0
+        );
+
+
+    const date =
+        document
+        .getElementById(
+            "transactionDate"
+        )
+        .value || today();
+
+
+    const note =
+        document
+        .getElementById(
+            "transactionNote"
+        )
+        .value
+        .trim();
+
+
+    if(!employeeId){
+
+        showToast(
+            "पहले कर्मचारी चुनें"
+        );
+
+        return;
+
+    }
+
+
+    if(amount <= 0){
+
+        showToast(
+            "सही रकम डालें"
+        );
+
+        return;
+
+    }
+
+
+    db.transactions.push({
+
+        id:createId(),
+
+        employeeId,
+
+        type,
+
+        amount,
+
+        date,
+
+        note
+
+    });
+
+
+    saveDatabase();
+
+
+    document.getElementById(
+        "transactionAmount"
+    ).value = "";
+
+
+    document.getElementById(
+        "transactionNote"
+    ).value = "";
+
+
+    renderAccount();
+
+    renderDashboard();
+
+    showToast(
+        "हिसाब में जोड़ दिया गया"
+    );
+
+}
+
+
+/* =========================================================
+   TRANSACTION HISTORY
+========================================================= */
+
+function renderTransactionHistory(
+    employeeId,
+    selectedMonth
+){
+
+    const box =
+        document.getElementById(
+            "transactionHistory"
+        );
+
+
+    const list =
+        db.transactions
+        .filter(transaction =>
+
+            transaction.employeeId ===
+            employeeId &&
+
+            transaction.date.startsWith(
+                selectedMonth
+            )
+
+        )
+        .sort(
+            (a,b)=>
+                b.date.localeCompare(
+                    a.date
+                )
+        );
+
+
+    if(!list.length){
+
+        box.innerHTML = `
+            <div class="empty">
+                इस महीने कोई Transaction नहीं।
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    const labels = {
+
+        advance:"Advance",
+
+        payment:"Payment",
+
+        bonus:"Bonus",
+
+        deduction:"Deduction"
+
+    };
+
+
+    box.innerHTML =
+        list.map(transaction=>`
+
+            <div
+                class="history-row">
+
+                <div>
+
+                    <strong>
+                        ${
+                            labels[
+                                transaction.type
+                            ] ||
+                            transaction.type
+                        }
+                    </strong>
+
+                    <div
+                        style="
+                            font-size:12px;
+                            color:#687781;
+                            margin-top:3px;
+                        ">
+
+                        ${formatDate(
+                            transaction.date
+                        )}
+
+                        ${
+                            transaction.note
+                            ? " • " +
+                              escapeHTML(
+                                transaction.note
+                              )
+                            : ""
+                        }
+
+                    </div>
+
+                </div>
+
+
+                <div>
+
+                    <strong>
+                        ${money(
+                            transaction.amount
+                        )}
+                    </strong>
+
+                    <br>
+
+                    <button
+                        class="btn danger"
+                        style="
+                            min-height:29px;
+                            padding:3px 8px;
+                            font-size:11px;
+                            margin-top:4px;
+                        "
+                        onclick="
+                            deleteTransaction(
+                                '${transaction.id}'
+                            )
+                        ">
+
+                        Delete
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        `).join("");
+
+}
+
+
+/* =========================================================
+   DELETE TRANSACTION
+========================================================= */
+
+function deleteTransaction(id){
+
+    if(
+        !confirm(
+            "यह Transaction Delete करना है?"
+        )
+    ){
+
+        return;
+
+    }
+
+
+    db.transactions =
+        db.transactions.filter(
+            transaction =>
+                transaction.id !== id
+        );
+
+
+    saveDatabase();
+
+    renderAccount();
+
+    renderDashboard();
+
+    showToast(
+        "Transaction Delete हो गया"
+    );
+
+}
+
+
+/* =========================================================
+   REPORT
+========================================================= */
+
+    /* =========================================================
+   REPORT SYSTEM - FIXED
+========================================================= */
+
+function prepareReports(){
+
+    refreshEmployeeSelects();
+
+    const monthInput =
+        document.getElementById("reportMonth");
+
+    if(!monthInput.value){
+        monthInput.value = currentMonth();
+    }
+
+    renderReport();
+}
+
+
+/* ---------------------------------------------------------
+   REPORT ATTENDANCE READER
+   पुराने और नए दोनों attendance key format पढ़ता है
+--------------------------------------------------------- */
+
+function getEmployeeAttendanceForMonth(
+    employeeId,
+    selectedMonth
+){
+
+    const records = [];
+
+    const [year, month] =
+        selectedMonth.split("-").map(Number);
+
+    if(!year || !month){
+        return records;
+    }
+
+    const daysInMonth =
+        new Date(year, month, 0).getDate();
+
+
+    for(let day = 1; day <= daysInMonth; day++){
+
+        const date =
+            selectedMonth +
+            "-" +
+            String(day).padStart(2,"0");
+
+
+        let status = "";
+
+
+        /* नया format */
+
+        const newKey =
+            date + "|" + employeeId;
+
+
+        if(
+            db.attendance &&
+            db.attendance[newKey]
+        ){
+
+            status =
+                db.attendance[newKey];
+
+        }
+
+
+        /* पुराने format की compatibility */
+
+        if(!status){
+
+            const oldKey =
+                date + "_" + employeeId;
+
+
+            if(
+                db.attendance &&
+                db.attendance[oldKey]
+            ){
+
+                status =
+                    db.attendance[oldKey];
+
+            }
+
+        }
+
+
+        records.push({
+
+            date: date,
+
+            status: status || ""
+
+        });
+
+    }
+
+
+    return records;
+
+}
+
+
+/* ---------------------------------------------------------
+   REPORT CALCULATION
+--------------------------------------------------------- */
+
+function calculateReportData(
+    employeeId,
+    selectedMonth
+){
+
+    const employee =
+        db.employees.find(
+            e => e.id === employeeId
+        );
+
+
+    if(!employee){
+        return null;
+    }
+
+
+    const attendance =
+        getEmployeeAttendanceForMonth(
+            employeeId,
+            selectedMonth
+        );
+
+
+    let present = 0;
+    let absent = 0;
+    let half = 0;
+    let leave = 0;
+
+
+    attendance.forEach(record => {
+
+        if(record.status === "present"){
+            present++;
+        }
+
+        else if(record.status === "absent"){
+            absent++;
+        }
+
+        else if(record.status === "half"){
+            half++;
+        }
+
+        else if(record.status === "leave"){
+            leave++;
+        }
+
+    });
+
+
+    const wage =
+        Number(employee.wage || 0);
+
+
+    const earnedSalary =
+        (present * wage) +
+        (half * wage * 0.5);
+
+
+    let advance = 0;
+    let payment = 0;
+    let bonus = 0;
+    let deduction = 0;
+
+
+    const employeeTransactions =
+        db.transactions.filter(transaction => {
+
+            if(
+                transaction.employeeId !==
+                employeeId
+            ){
+                return false;
+            }
+
+            return (
+                String(transaction.date || "")
+                .startsWith(selectedMonth)
+            );
+
+        });
+
+
+    employeeTransactions.forEach(
+        transaction => {
+
+            const amount =
+                Number(transaction.amount || 0);
+
+
+            if(transaction.type === "advance"){
+                advance += amount;
+            }
+
+            else if(transaction.type === "payment"){
+                payment += amount;
+            }
+
+            else if(transaction.type === "bonus"){
+                bonus += amount;
+            }
+
+            else if(transaction.type === "deduction"){
+                deduction += amount;
+            }
+
+        }
+    );
+
+
+    const netSalary =
+        earnedSalary +
+        bonus -
+        deduction;
+
+
+    const due =
+        netSalary -
+        advance -
+        payment;
+
+
+    return {
+
+        employee,
+
+        attendance,
+
+        transactions:
+            employeeTransactions,
+
+        present,
+        absent,
+        half,
+        leave,
+
+        wage,
+
+        earnedSalary,
+
+        advance,
+        payment,
+        bonus,
+        deduction,
+
+        netSalary,
+        due
+
+    };
+
+}
+
+
+/* ---------------------------------------------------------
+   REPORT STATUS
+--------------------------------------------------------- */
+
+function reportStatusHTML(status){
+
+    if(status === "present"){
+
+        return `
+            <span class="badge present">
+                ✓ Present
+            </span>
+        `;
+
+    }
+
+
+    if(status === "absent"){
+
+        return `
+            <span class="badge absent">
+                ✕ Absent
+            </span>
+        `;
+
+    }
+
+
+    if(status === "half"){
+
+        return `
+            <span class="badge half">
+                ½ Half Day
+            </span>
+        `;
+
+    }
+
+
+    if(status === "leave"){
+
+        return `
+            <span class="badge leave">
+                🏖 Leave
+            </span>
+        `;
+
+    }
+
+
+    return `
+        <span class="badge none">
+            Not Marked
+        </span>
+    `;
+
+}
+
+
+/* ---------------------------------------------------------
+   REPORT TRANSACTION TYPE
+--------------------------------------------------------- */
+
+function reportTransactionType(type){
+
+    const names = {
+
+        advance: "Advance",
+
+        payment: "Payment",
+
+        bonus: "Bonus",
+
+        deduction: "Deduction"
+
+    };
+
+    return names[type] || type;
+
+}
+
+
+/* ---------------------------------------------------------
+   MAIN REPORT
+--------------------------------------------------------- */
+
+function renderReport(){
+
+    const employeeSelect =
+        document.getElementById(
+            "reportEmployee"
+        );
+
+
+    const monthInput =
+        document.getElementById(
+            "reportMonth"
+        );
+
+
+    const box =
+        document.getElementById(
+            "reportResult"
+        );
+
+
+    const employeeId =
+        employeeSelect.value;
+
+
+    const selectedMonth =
+        monthInput.value;
+
+
+    if(!box){
+        return;
+    }
+
+
+    if(!employeeId){
+
+        box.innerHTML = `
+
+            <div class="card empty">
+
+                📊 Report देखने के लिए
+                कर्मचारी चुनें।
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    if(!selectedMonth){
+
+        box.innerHTML = `
+
+            <div class="card empty">
+
+                पहले महीना चुनें।
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    const data =
+        calculateReportData(
+            employeeId,
+            selectedMonth
+        );
+
+
+    if(!data){
+
+        box.innerHTML = `
+
+            <div class="card empty">
+
+                कर्मचारी का डेटा नहीं मिला।
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    /* -----------------------------------------------------
+       DAILY ATTENDANCE TABLE
+    ----------------------------------------------------- */
+
+    let attendanceRows = "";
+
+
+    data.attendance.forEach(record => {
+
+        attendanceRows += `
+
+            <tr>
+
+                <td>
+                    ${formatDate(record.date)}
+                </td>
+
+                <td>
+                    ${reportStatusHTML(
+                        record.status
+                    )}
+                </td>
+
+            </tr>
+
+        `;
+
+    });
+
+
+    /* -----------------------------------------------------
+       TRANSACTION TABLE
+    ----------------------------------------------------- */
+
+    let transactionRows = "";
+
+
+    if(data.transactions.length){
+
+        const sortedTransactions =
+            [...data.transactions].sort(
+                (a,b) =>
+                    String(b.date)
+                    .localeCompare(
+                        String(a.date)
+                    )
+            );
+
+
+        sortedTransactions.forEach(
+            transaction => {
+
+                transactionRows += `
+
+                    <tr>
+
+                        <td>
+                            ${formatDate(
+                                transaction.date
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(
+                                reportTransactionType(
+                                    transaction.type
+                                )
+                            )}
+                        </td>
+
+                        <td>
+                            ${money(
+                                transaction.amount
+                            )}
+                        </td>
+
+                        <td>
+                            ${
+                                transaction.note
+                                ? escapeHTML(
+                                    transaction.note
+                                  )
+                                : "-"
+                            }
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+        );
+
+    }else{
+
+        transactionRows = `
+
+            <tr>
+
+                <td
+                    colspan="4"
+                    style="text-align:center;">
+
+                    इस महीने कोई हिसाब नहीं।
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+
+    /* -----------------------------------------------------
+       FINAL REPORT CARD
+    ----------------------------------------------------- */
+
+    box.innerHTML = `
+
+        <!-- EMPLOYEE PROFILE -->
+
+        <div class="card">
+
+            <div class="employee-card">
+
+                <div class="avatar">
+
+                    ${escapeHTML(
+                        data.employee.name
+                        .trim()
+                        .charAt(0)
+                    )}
+
+                </div>
+
+
+                <div class="employee-info">
+
+                    <h3>
+
+                        ${escapeHTML(
+                            data.employee.name
+                        )}
+
+                    </h3>
+
+
+                    <p>
+
+                        ${
+                            escapeHTML(
+                                data.employee.role ||
+                                "कर्मचारी"
+                            )
+                        }
+
+                    </p>
+
+
+                    ${
+                        data.employee.mobile
+                        ? `
+                            <p>
+                                📱 ${
+                                    escapeHTML(
+                                        data.employee.mobile
+                                    )
+                                }
+                            </p>
+                          `
+                        : ""
+                    }
+
+
+                    <p>
+
+                        Daily Wage:
+                        <b>
+                            ${money(data.wage)}
+                        </b>
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- MONTH SUMMARY -->
+
+        <div class="card">
+
+            <h3>
+
+                📊 ${escapeHTML(
+                    data.employee.name
+                )}
+
+                — ${selectedMonth}
+
+            </h3>
+
+
+            <div
+                class="summary-grid"
+                style="margin-top:12px;">
+
+                <div class="summary-box">
+
+                    <small>
+                        Present
+                    </small>
+
+                    <strong>
+                        ${data.present}
+                    </strong>
+
+                </div>
+
+
+                <div class="summary-box">
+
+                    <small>
+                        Absent
+                    </small>
+
+                    <strong>
+                        ${data.absent}
+                    </strong>
+
+                </div>
+
+
+                <div class="summary-box">
+
+                    <small>
+                        Half Day
+                    </small>
+
+                    <strong>
+                        ${data.half}
+                    </strong>
+
+                </div>
+
+
+                <div class="summary-box">
+
+                    <small>
+                        Leave
+                    </small>
+
+                    <strong>
+                        ${data.leave}
+                    </strong>
+
+                </div>
+
+
+                <div class="summary-box">
+
+                    <small>
+                        Earned Salary
+                    </small>
+
+                    <strong>
+                        ${money(
+                            data.earnedSalary
+                        )}
+                    </strong>
+
+                </div>
+
+
+                <div class="summary-box">
+
+                    <small>
+                        Bonus
+                    </small>
+
+                    <strong>
+                        ${money(
+                            data.bonus
+                        )}
+                    </strong>
+
+                </div>
+
+
+                <div class="summary-box">
+
+                    <small>
+                        Advance
+                    </small>
+
+                    <strong>
+                        ${money(
+                            data.advance
+                        )}
+                    </strong>
+
+                </div>
+
+
+                <div class="summary-box">
+
+                    <small>
+                        Payment
+                    </small>
+
+                    <strong>
+                        ${money(
+                            data.payment
+                        )}
+                    </strong>
+
+                </div>
+
+
+                <div class="summary-box">
+
+                    <small>
+                        Deduction
+                    </small>
+
+                    <strong>
+                        ${money(
+                            data.deduction
+                        )}
+                    </strong>
+
+                </div>
+
+
+                <div class="summary-box">
+
+                    <small>
+                        Net Salary
+                    </small>
+
+                    <strong>
+                        ${money(
+                            data.netSalary
+                        )}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- FINAL DUE -->
+
+            <div
+                style="
+                    margin-top:14px;
+                    padding:17px;
+                    border-radius:15px;
+                    background:#eaf6ff;
+                ">
+
+                <small>
+                    अंतिम बाकी
+                </small>
+
+
+                <strong
+                    style="
+                        display:block;
+                        margin-top:4px;
+                        font-size:29px;
+                        color:${
+                            data.due >= 0
+                            ? "#1769aa"
+                            : "#e74c3c"
+                        };
+                    ">
+
+                    ${money(data.due)}
+
+                </strong>
+
+
+                ${
+                    data.due < 0
+                    ? `
+                        <small
+                            style="
+                                display:block;
+                                margin-top:5px;
+                                color:#e74c3c;
+                            ">
+
+                            कर्मचारी को
+                            ${money(
+                                Math.abs(data.due)
+                            )}
+                            अधिक भुगतान हुआ है।
+
+                        </small>
+                      `
+                    : ""
+                }
+
+            </div>
+
+        </div>
+
+
+        <!-- COMPLETE ATTENDANCE -->
+
+        <div class="card">
+
+            <h3>
+                📅 ${selectedMonth}
+                की पूरी Attendance
+            </h3>
+
+
+            <div
+                class="table-wrap"
+                style="margin-top:12px;">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                तारीख
+                            </th>
+
+                            <th>
+                                Attendance
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        ${attendanceRows}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <!-- TRANSACTION HISTORY -->
+
+        <div class="card">
+
+            <h3>
+                💰 ${selectedMonth}
+                का पूरा हिसाब
+            </h3>
+
+
+            <div
+                class="table-wrap"
+                style="margin-top:12px;">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                तारीख
+                            </th>
+
+                            <th>
+                                प्रकार
+                            </th>
+
+                            <th>
+                                रकम
+                            </th>
+
+                            <th>
+                                नोट
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        ${transactionRows}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+/* =========================================================
+   DASHBOARD
+========================================================= */
+
+function renderDashboard(){
+
+    const date =
+        document
+        .getElementById(
+            "dashboardDate"
+        )
+        .value || today();
+
+
+    document.getElementById(
+        "dashboardDate"
+    ).value = date;
+
+
+    document.getElementById(
+        "statEmployees"
+    ).textContent =
+        db.employees.length;
+
+
+    let present = 0;
+    let absent = 0;
+
+
+    db.employees.forEach(
+        employee=>{
+
+            const status =
+                db.attendance[
+                    attendanceKey(
+                        date,
+                        employee.id
+                    )
+                ];
+
+
+            if(status === "present")
+                present++;
+
+
+            if(status === "absent")
+                absent++;
+
+        }
+    );
+
+
+    document.getElementById(
+        "statPresent"
+    ).textContent =
+        present;
+
+
+    document.getElementById(
+        "statAbsent"
+    ).textContent =
+        absent;
+
+
+    const selectedMonth =
+        date.slice(0,7);
+
+
+    let salary = 0;
+    let due = 0;
+
+
+    db.employees.forEach(
+        employee=>{
+
+            const data =
+                calculateAccount(
+                    employee.id,
+                    selectedMonth
+                );
+
+
+            if(data){
+
+                salary +=
+                    data.earnedSalary;
+
+                due +=
+                    data.due;
+
+            }
+
+        }
+    );
+
+
+    document.getElementById(
+        "statSalary"
+    ).textContent =
+        money(salary);
+
+
+    document.getElementById(
+        "statDue"
+    ).textContent =
+        money(due);
+
+
+    const list =
+        document.getElementById(
+            "dashboardAttendance"
+        );
+
+
+    if(!db.employees.length){
+
+        list.innerHTML = `
+            <div class="empty">
+                अभी कोई कर्मचारी नहीं है।
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    const labels = {
+
+        present:"✅ Present",
+
+        absent:"❌ Absent",
+
+        half:"½ Half Day",
+
+        leave:"🏖 Leave"
+
+    };
+
+
+    list.innerHTML =
+        db.employees.map(
+            employee=>{
+
+                const status =
+                    db.attendance[
+                        attendanceKey(
+                            date,
+                            employee.id
+                        )
+                    ];
+
+
+                return `
+
+                    <div
+                        class="history-row">
+
+                        <span>
+                            ${escapeHTML(
+                                employee.name
+                            )}
+                        </span>
+
+                        <strong>
+                            ${
+                                labels[status] ||
+                                "⚪ Not Marked"
+                            }
+                        </strong>
+
+                    </div>
+
+                `;
+
+            }
+        ).join("");
+
+}
+
+
+/* =========================================================
+   LOCAL BACKUP
+========================================================= */
+
+function createBackupObject(){
+
+    return {
+
+        app:
+            "Employee Management System",
+
+        version:
+            3,
+
+        exportedAt:
+            new Date().toISOString(),
+
+        data:db
+
+    };
+
+}
+
+
+function downloadBackup(){
+
+    const backup =
+        createBackupObject();
+
+
+    const blob =
+        new Blob(
+            [
+                JSON.stringify(
+                    backup,
+                    null,
+                    2
+                )
+            ],
+            {
+                type:
+                    "application/json"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(blob);
+
+
+    const a =
+        document.createElement("a");
+
+
+    a.href = url;
+
+
+    a.download =
+        "employee-backup-" +
+        today() +
+        ".json";
+
+
+    document.body.appendChild(a);
+
+    a.click();
+
+    a.remove();
+
+
+    setTimeout(
+        ()=>URL.revokeObjectURL(url),
+        1000
+    );
+
+
+    showToast(
+        "Backup file तैयार है"
+    );
+
+}
+
+
+function restoreLocalBackup(event){
+
+    const file =
+        event.target.files[0];
+
+
+    if(!file) return;
+
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload =
+        function(){
+
+            try{
+
+                const backup =
+                    JSON.parse(
+                        reader.result
+                    );
+
+
+                if(
+                    !backup.data ||
+                    !Array.isArray(
+                        backup.data.employees
+                    ) ||
+                    typeof
+                        backup.data.attendance
+                        !== "object" ||
+                    !Array.isArray(
+                        backup.data.transactions
+                    )
+                ){
+
+                    throw new Error(
+                        "Invalid Backup"
+                    );
+
+                }
+
+
+                if(
+                    !confirm(
+                        "Restore करने से वर्तमान डेटा बदल जाएगा। Continue?"
+                    )
+                ){
+
+                    return;
+
+                }
+
+
+                db = {
+
+                    employees:
+                        backup.data.employees,
+
+                    attendance:
+                        backup.data.attendance,
+
+                    transactions:
+                        backup.data.transactions
+
+                };
+
+
+                saveDatabase();
+
+                renderDashboard();
+
+                renderEmployees();
+
+                renderAttendance();
+
+                refreshEmployeeSelects();
+
+                renderAccount();
+
+                renderReport();
+
+
+                showToast(
+                    "Backup Restore हो गया"
+                );
+
+
+            }catch(error){
+
+                alert(
+                    "Backup file सही नहीं है।"
+                );
+
+            }
+
+        };
+
+
+    reader.readAsText(file);
+
+
+    event.target.value = "";
+
+}
+
+
+/* =========================================================
+   DELETE ALL DATA
+========================================================= */
+
+function deleteAllData(){
+
+    if(
+        !confirm(
+            "सभी डेटा Delete करना है?"
+        )
+    ){
+
+        return;
+
+    }
+
+
+    if(
+        !confirm(
+            "यह कार्रवाई वापस नहीं की जा सकती। क्या आपने Backup लिया है?"
+        )
+    ){
+
+        return;
+
+    }
+
+
+    db = {
+
+        employees:[],
+
+        attendance:{},
+
+        transactions:[]
+
+    };
+
+
+    saveDatabase();
+
+
+    renderDashboard();
+
+    renderEmployees();
+
+    renderAttendance();
+
+    refreshEmployeeSelects();
+
+    renderAccount();
+
+    renderReport();
+
+
+    showToast(
+        "सभी डेटा Delete हो गया"
+    );
+
+}
+
+
+/* =========================================================
+   GOOGLE DRIVE
+========================================================= */
+
+/*
+ IMPORTANT:
+
+ Google Drive Backup के लिए
+ Google Cloud Console में OAuth 2.0 Web Client ID
+ बनाना जरूरी है।
+
+ Scope:
+ https://www.googleapis.com/auth/drive.file
+
+ यह code Google Drive API के साथ
+ Backup file create/update और restore
+ करने की logic रखता है।
+*/
+
+
+let googleAccessToken = null;
+
+
+function saveGoogleClientId(){
+
+    const value =
+        document
+        .getElementById(
+            "googleClientId"
+        )
+        .value
+        .trim();
+
+
+    localStorage.setItem(
+        "employee_google_client_id",
+        value
+    );
+
+}
+
+
+function getGoogleClientId(){
+
+    return (
+        localStorage.getItem(
+            "employee_google_client_id"
+        ) || ""
+    );
+
+}
+
+
+function updateGoogleStatus(){
+
+    const status =
+        document.getElementById(
+            "googleStatus"
+        );
+
+
+    if(googleAccessToken){
+
+        status.textContent =
+            "✅ Google Drive Connected";
+
+    }else{
+
+        status.textContent =
+            "Google Drive: Not Connected";
+
+    }
+
+}
+
+
+/*
+ Google Identity Services उपलब्ध होने पर
+ OAuth Token लिया जाएगा।
+*/
+
+function googleLogin(){
+
+    const clientId =
+        getGoogleClientId();
+
+
+    if(!clientId){
+
+        showToast(
+            "पहले Google OAuth Client ID डालें"
+        );
+
+        return;
+
+    }
+
+
+    if(
+        !window.google ||
+        !google.accounts ||
+        !google.accounts.oauth2
+    ){
+
+        showToast(
+            "Google Login service अभी load नहीं हुई"
+        );
+
+        return;
+
+    }
+
+
+    const tokenClient =
+        google.accounts.oauth2
+        .initTokenClient({
+
+            client_id:
+                clientId,
+
+            scope:
+                "https://www.googleapis.com/auth/drive.file",
+
+            callback:
+                function(response){
+
+                    if(
+                        response.error
+                    ){
+
+                        console.error(
+                            response
+                        );
+
+                        showToast(
+                            "Google Login failed"
+                        );
+
+                        return;
+
+                    }
+
+
+                    googleAccessToken =
+                        response.access_token;
+
+
+                    updateGoogleStatus();
+
+
+                    showToast(
+                        "Google Drive Connected"
+                    );
+
+                }
+
+        });
+
+
+    tokenClient.requestAccessToken({
+        prompt:"consent"
+    });
+
+}
+
+
+function googleLogout(){
+
+    if(
+        googleAccessToken &&
+        window.google &&
+        google.accounts &&
+        google.accounts.oauth2
+    ){
+
+        google.accounts.oauth2
+        .revoke(
+            googleAccessToken
+        );
+
+    }
+
+
+    googleAccessToken = null;
+
+    updateGoogleStatus();
+
+    showToast(
+        "Google Logout हो गया"
+    );
+
+}
+
+
+/* =========================================================
+   DRIVE API REQUEST
+========================================================= */
+
+async function driveRequest(
+    url,
+    options={}
+){
+
+    if(!googleAccessToken){
+
+        throw new Error(
+            "NOT_LOGGED_IN"
+        );
+
+    }
+
+
+    options.headers = {
+
+        ...(options.headers || {}),
+
+        Authorization:
+            "Bearer " +
+            googleAccessToken
+
+    };
+
+
+    const response =
+        await fetch(
+            url,
+            options
+        );
+
+
+    if(
+        !response.ok
+    ){
+
+        const text =
+            await response.text();
+
+
+        throw new Error(
+            text ||
+            response.status
+        );
+
+    }
+
+
+    return response;
+
+}
+
+
+/* =========================================================
+   FIND BACKUP FILE
+========================================================= */
+
+async function findDriveBackup(){
+
+    const query =
+        encodeURIComponent(
+            "name='" +
+            DRIVE_FILE_NAME +
+            "' and trashed=false"
+        );
+
+
+    const response =
+        await driveRequest(
+            "https://www.googleapis.com/drive/v3/files" +
+            "?q=" + query +
+            "&spaces=drive" +
+            "&fields=files(id,name,modifiedTime)" +
+            "&pageSize=10"
+        );
+
+
+    const result =
+        await response.json();
+
+
+    return (
+        result.files &&
+        result.files.length
+        ? result.files[0]
+        : null
+    );
+
+}
+
+
+/* =========================================================
+   CREATE MULTIPART BODY
+========================================================= */
+
+function createMultipartBody(
+    metadata,
+    content
+){
+
+    const boundary =
+        "EmployeeBackup" +
+        Date.now();
+
+
+    const body =
+        [
+            "--" + boundary,
+
+            "Content-Type: application/json; charset=UTF-8",
+
+            "",
+
+            JSON.stringify(
+                metadata
+            ),
+
+            "--" + boundary,
+
+            "Content-Type: application/json",
+
+            "",
+
+            content,
+
+            "--" +
+            boundary +
+            "--"
+
+        ].join("\r\n");
+
+
+    return {
+
+        body,
+
+        contentType:
+            "multipart/related; boundary=" +
+            boundary
+
+    };
+
+}
+
+
+/* =========================================================
+   DRIVE BACKUP
+========================================================= */
+
+async function backupToGoogleDrive(){
+
+    try{
+
+        if(!googleAccessToken){
+
+            showToast(
+                "पहले Google Login करें"
+            );
+
+            return;
+
+        }
+
+
+        const backup =
+            createBackupObject();
+
+
+        const content =
+            JSON.stringify(
+                backup,
+                null,
+                2
+            );
+
+
+        const existing =
+            await findDriveBackup();
+
+
+        const multipart =
+            createMultipartBody(
+
+                {
+
+                    name:
+                        DRIVE_FILE_NAME,
+
+                    mimeType:
+                        "application/json"
+
+                },
+
+                content
+
+            );
+
+
+        let url;
+
+
+        let method;
+
+
+        if(existing){
+
+            url =
+                "https://www.googleapis.com/upload/drive/v3/files/" +
+                existing.id +
+                "?uploadType=multipart";
+
+
+            method =
+                "PATCH";
+
+        }else{
+
+            url =
+                "https://www.googleapis.com/upload/drive/v3/files" +
+                "?uploadType=multipart";
+
+
+            method =
+                "POST";
+
+        }
+
+
+        await driveRequest(
+            url,
+            {
+
+                method,
+
+                headers:{
+
+                    "Content-Type":
+                        multipart.contentType
+
+                },
+
+                body:
+                    multipart.body
+
+            }
+        );
+
+
+        const backupTime =
+            new Date()
+            .toLocaleString(
+                "hi-IN"
+            );
+
+
+        document.getElementById(
+            "lastBackup"
+        ).textContent =
+            "Last Backup: " +
+            backupTime;
+
+
+        localStorage.setItem(
+            "employee_last_drive_backup",
+            backupTime
+        );
+
+
+        showToast(
+            "Google Drive Backup सफल"
+        );
+
+
+    }catch(error){
+
+        console.error(error);
+
+        showToast(
+            "Google Drive Backup failed"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   DRIVE RESTORE
+========================================================= */
+
+async function restoreFromGoogleDrive(){
+
+    try{
+
+        if(!googleAccessToken){
+
+            showToast(
+                "पहले Google Login करें"
+            );
+
+            return;
+
+        }
+
+
+        const file =
+            await findDriveBackup();
+
+
+        if(!file){
+
+            showToast(
+                "Google Drive में Backup नहीं मिला"
+            );
+
+            return;
+
+        }
+
+
+        const response =
+            await driveRequest(
+                "https://www.googleapis.com/drive/v3/files/" +
+                file.id +
+                "?alt=media"
+            );
+
+
+        const backup =
+            await response.json();
+
+
+        if(
+            !backup.data ||
+            !Array.isArray(
+                backup.data.employees
+            ) ||
+            typeof
+                backup.data.attendance
+                !== "object" ||
+            !Array.isArray(
+                backup.data.transactions
+            )
+        ){
+
+            throw new Error(
+                "Invalid Drive Backup"
+            );
+
+        }
+
+
+        if(
+            !confirm(
+                "Google Drive Backup Restore करने से वर्तमान डेटा replace होगा। Continue?"
+            )
+        ){
+
+            return;
+
+        }
+
+
+        db = {
+
+            employees:
+                backup.data.employees,
+
+            attendance:
+                backup.data.attendance,
+
+            transactions:
+                backup.data.transactions
+
+        };
+
+
+        saveDatabase();
+
+
+        renderDashboard();
+
+        renderEmployees();
+
+        renderAttendance();
+
+        refreshEmployeeSelects();
+
+        renderAccount();
+
+        renderReport();
+
+
+        showToast(
+            "Google Drive से Restore सफल"
+        );
+
+
+    }catch(error){
+
+        console.error(error);
+
+        showToast(
+            "Google Drive Restore failed"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+function initializeApp(){
+
+    loadDatabase();
+
+
+    document.getElementById(
+        "dashboardDate"
+    ).value =
+        today();
+
+
+    document.getElementById(
+        "attendanceDate"
+    ).value =
+        today();
+
+
+    document.getElementById(
+        "transactionDate"
+    ).value =
+        today();
+
+
+    document.getElementById(
+        "accountMonth"
+    ).value =
+        currentMonth();
+
+
+    document.getElementById(
+        "reportMonth"
+    ).value =
+        currentMonth();
+
+
+    document.getElementById(
+        "googleClientId"
+    ).value =
+        getGoogleClientId();
+
+
+    const lastBackup =
+        localStorage.getItem(
+            "employee_last_drive_backup"
+        );
+
+
+    if(lastBackup){
+
+        document.getElementById(
+            "lastBackup"
+        ).textContent =
+            "Last Backup: " +
+            lastBackup;
+
+    }
+
+
+    renderDashboard();
+
+    renderEmployees();
+
+    renderAttendance();
+
+    refreshEmployeeSelects();
+
+    renderAccount();
+
+    renderReport();
+
+    updateGoogleStatus();
+
+}
+
+
+initializeApp();
+
+</script>
+
+</body>
+</html>
